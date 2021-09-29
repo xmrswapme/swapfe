@@ -203,13 +203,7 @@ def index():
                             </tr>
                           </thead>
                           <tbody>
-               url = 'https://pypi.python.org/packages/source/x/xlrd/xlrd-0.9.4.tar.gz'
-target_path = 'xlrd-0.9.4.tar.gz'
-
-response = requests.get(url, stream=True)
-if response.status_code == 200:
-    with open(target_path, 'wb') as f:
-        f.write(response.raw.read())               <tr scope="row">
+                         <tr scope="row">
                                   <td>%s</td>
                                   <td>%s</td>
                                   
