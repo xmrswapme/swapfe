@@ -89,7 +89,6 @@ def render_sellers_html(SellerData):
 
 def GetSellers(rendezvous):
 
-    from _decimal import Decimal
     SellerData = []
 
     SwapCMD = [SwapCmd,'-j', 'list-sellers', '--rendezvous-point', rendezvous, '--tor-socks5-port', '9050']
