@@ -55,7 +55,7 @@ The swap cli database is very primative as of now and just displays the SWAP ID 
 
 #### Testing
 
-We have successfully tested this on various error responses and completed swaps. It **MUST** be pointed out that not all use caseses have arose in our testing. This is why we need more people to test this interface so we can properly interpret the JSON results so they may be provided within the interface and appropriate responses can be implemented. 
+We have successfully tested this on various error responses and completed swaps. It **MUST** be pointed out that not all use cases have arose in our testing. This is why we need more people to test this interface so we can properly interpret the JSON results so they may be provided within the interface and appropriate responses can be implemented. 
 
 What you can do if the interface fails to provide you with a status that is acceptable is to provide us with the JSON output in the console you ran **swapfe** from. This will allow us to code an interpreter to the JSON output and be able to handle it within the UI. 
 
