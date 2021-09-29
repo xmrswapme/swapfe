@@ -51,6 +51,55 @@ def withdraw():
 
     return Response(inner(BTCAddress), mimetype='text/html')  # text/html is required for most browsers to show th$
 
+@app.route('/listsellerform')
+def sellerform():
+    return render_template('listsellerform.html')    
+
+@app.route('/listsellers', methods=['POST', 'GET'])
+def listsellers():
+    def inner(rendezvous):
+        SellerData = []
+
+        SwapCMD = [SwapCmd, 'list-sellers', '--rendezvous-point', rendezvous]
+        proc = subprocess.Popen(SwapCMD, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
+        
+        for line in iter(proc.stderr.readline, ''):
+            try:
+                jsonOBJ = json.loads(line)
+            except Exception as e:
+                print(str(e))
+                yield str(e)
+                break
+            if 'status' in jsonOBJ:
+                if 'online' in jsonOBJ['status']:
+                    SellerInfo = []
+                    try:
+                        SellerInfo.append(jsonOBJ['status']['online']['price'])
+                        SellerInfo.append(jsonOBJ['status']['online']['min_quantity'])
+                        SellerInfo.append(jsonOBJ['status']['online']['max_quantity'])
+                        SellerInfo.append(jsonOBJ['status']['multiaddr'])
+                        SellerData.append(SellerInfo)
+                    except Exception as e:
+                        print(str(e))
+                        yield str(e)
+                        break
+                else:
+                    continue
+            else:
+                continue
+        
+        return SellerData
+
+            
+    try: 
+        rendezvous = request.form['multiaddress']
+    except Exception as e:
+        return Response(str(e), mimetype='text/html')
+    SellerData = inner(rendezvous)
+    StandardHTML = open(StandardHTMLFile, "r")
+    html_output = StandardHTML.read()
+    return Response(html_output, data=SellerData, mimetype='text/html')  # text/html is required for most browsers to show th$
+
     
 @app.route('/history')
 def SwapHistory():

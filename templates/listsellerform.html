@@ -2,6 +2,7 @@
     <head>
         <link rel="stylesheet" href="../static/css/onionform.css">
         <link rel="stylesheet" href="../static/css/style.css">
+        <link rel="stylesheet" href="../static/css/iframe.css"> 
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Alegreya+Sans+SC&display=swap">
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Benne&display=swap">
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Allerta&display=swap">
@@ -23,7 +24,7 @@
                             </li>                             
                         
                             <li class="nav-item"> 
-                                <a class="nav-link" href="/withdraw">Withdraw</a> 
+                                <a class="nav-link" href="/withdrawform">Withdraw</a> 
                             </li>                             
                             <li class="nav-item"> 
                                 <a class="nav-link" href="/history">History</a> 
@@ -35,19 +36,39 @@
                 </div>                 
             </nav>
         <div class="container">
-            <h1>Swap failed?</h1>
-            <p><strong>Your funds are safe</strong></p><br>
-            <h2>Refund to Your Original Bitcoin Wallet</h2>
-            <form action="http://localhost:3333/withdraw" id="join-us" method="post">
+            <h1>Start a Swap!</h1>
+            <h2>Onion3/Tor Addresses Suppored!</h2>
+            <form action="http://localhost:3333/listsellers" id="join-us" method="post">
                 <div class="fields">
+                    <span> <input placeholder="Rendezcous Multiaddress" type="text" name="multiaddress" id="multiaddress"/><p style="color: white; font-size: 12px; font-family: 'Allerta', sans-serif;">Full Multiaddress of Rendezvous endpoint"</p> </span>
+                    <br/>
+                    <!-- 
+                    <div id="loaderImg"><img src="../static/img/loading-gif.gif" alt="" width="75px" height="75px"/></div>
+                    <div id="connected"><img src="../static/img/connected.png" alt="" width="128px" height="128px"/></div>
+                    <div id="connectedFail"><img src="../static/img/connected_fail.png" alt="" width="128px" height="128px"/></div>
+                     -->
 
-                    <span> <input placeholder="BTC Refund Address" type="text" name="btc" id="btc"/><p style="color: white; font-size: 12px; font-family: 'Allerta', sans-serif;">BTC Refund Address</p></span><br/>
                 </div>                
                 <div class="submit">
     				<!--  <input class="submit" type = "submit" value = "Submit" />-->
                     <input class="submit" value="Submit" type="submit" id="btnSignUp"/>
-                </div>
+                </div><br>
+                <p>Click only once and wait for the next screen to appear.</p>
             </form>
-    <br><br><br>
+             <script>
+			        window.setInterval("reloadIFrame();", 180000);
+			        function reloadIFrame() {
+			         document.getElementById("GlargVilardi").src=GlargVilardi.src;
+			        }
+			</script>
+			<br><br><br><br><br>
+			
+			    
+            <div id="GlargVilardi" style="--aspect-ratio: 16/9;">
+	            <iframe src="https://providers.xmrswap.me/getProviders" frameborder="0">
+				</iframe>
+            </div>
+            </div>
+
     
 
