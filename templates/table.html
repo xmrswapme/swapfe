@@ -34,9 +34,6 @@
                         
                             <li class="nav-item"> 
                                 <a class="nav-link" href="/withdrawform">Withdraw</a> 
-                            </li>
-                            <li class="nav-item"> 
-                                <a class="nav-link" href="/listsellerform">Sellers</a> 
                             </li>                             
                             <li class="nav-item"> 
                                 <a class="nav-link" href="/history">History</a> 
@@ -52,5 +49,29 @@
                      <h2>Live Atomic Swap<h2>
 
         
-        
-        
+      <div class="table-responsive">
+
+                       <table class="table table-striped custom-table">
+                          <thead>
+                            <tr>
+                              <th scope="col">Price</th>
+                              <th scope="col">Minimum</th>
+                              <th scope="col">Maximum</th>
+                              <th scope="col">Address</th>
+                            </tr>
+                          </thead>
+				          <tbody>
+				             {% for row in data %}
+				                <tr scope="row">
+				                        {% for d in row %}
+				                            <td>{{ d }}</td>
+				                        {% endfor %}
+				                </tr>
+				            {% endfor %}
+				          </tbody>
+                      </table>
+                      
+                      </div>
+                      </div>
+                      </div>
+                      <div class="footer"><p>swapfe v0.0.1</div>

@@ -53,6 +53,14 @@ Another feature of **swapfe** is the ability to view the output of the history d
 
 The swap cli database is very primative as of now and just displays the SWAP ID and the state the swap finished in. As you can see we conducted three successful swaps. 
 
+### Find Providers
+We have interpreted the output of the swap command when listing sellers for an arbritary rendezvousd point. It pulls in the price, min, max qty and the seller address to a formatted table and displays it within the web browser. The seller form and results can be seen in the following screenshots:
+
+![Seller Form](https://i.imgur.com/zCy4th5.png)
+
+![Rendezvous Results](https://i.imgur.com/Tfom7MR.png)
+
+
 #### Testing
 
 We have successfully tested this on various error responses and completed swaps. It **MUST** be pointed out that not all use cases have arose in our testing. This is why we need more people to test this interface so we can properly interpret the JSON results so they may be provided within the interface and appropriate responses can be implemented. 

@@ -7,7 +7,7 @@ import hashlib
 import psutil
 import os
 import webbrowser
-from numpy.compat.py3k import os_fspath
+from decimal import Decimal
 #import requests
 #import platform
 app = Flask(__name__)
@@ -15,7 +15,10 @@ app = Flask(__name__)
 
 SwapFormFile = os.path.join('templates', 'swapform.html')
 StandardHTMLFile = os.path.join('templates', 'standard.html')
+DashboardTMLFile = os.path.join('templates', 'dashboard.html')
 SwapCmd = os.path.abspath('swap')
+
+
 
 def kill(proc_pid):
     process = psutil.Process(proc_pid)
@@ -57,48 +60,69 @@ def sellerform():
 
 @app.route('/listsellers', methods=['POST', 'GET'])
 def listsellers():
-    def inner(rendezvous):
-        SellerData = []
-
-        SwapCMD = [SwapCmd, 'list-sellers', '--rendezvous-point', rendezvous]
-        proc = subprocess.Popen(SwapCMD, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
-        
-        for line in iter(proc.stderr.readline, ''):
-            try:
-                jsonOBJ = json.loads(line)
-            except Exception as e:
-                print(str(e))
-                yield str(e)
-                break
-            if 'status' in jsonOBJ:
-                if 'online' in jsonOBJ['status']:
-                    SellerInfo = []
-                    try:
-                        SellerInfo.append(jsonOBJ['status']['online']['price'])
-                        SellerInfo.append(jsonOBJ['status']['online']['min_quantity'])
-                        SellerInfo.append(jsonOBJ['status']['online']['max_quantity'])
-                        SellerInfo.append(jsonOBJ['status']['multiaddr'])
-                        SellerData.append(SellerInfo)
-                    except Exception as e:
-                        print(str(e))
-                        yield str(e)
-                        break
-                else:
-                    continue
-            else:
-                continue
-        
-        return SellerData
-
-            
+         
     try: 
         rendezvous = request.form['multiaddress']
     except Exception as e:
         return Response(str(e), mimetype='text/html')
-    SellerData = inner(rendezvous)
-    StandardHTML = open(StandardHTMLFile, "r")
+    return Response(GetSellers(rendezvous), mimetype='text/html')
+
+
+def format_btc(Price):
+    OneBTC = 100000000
+    BTC = Decimal(Price) / Decimal(OneBTC)
+    return(f"{BTC : .8f}")
+    
+def render_sellers_html(SellerData):
+    StandardHTML = open(DashboardTMLFile, "r")
     html_output = StandardHTML.read()
-    return Response(html_output, data=SellerData, mimetype='text/html')  # text/html is required for most browsers to show th$
+
+    html_table = ''
+    for row in SellerData:
+        html_table = html_table + '<tr scope="row">\n'
+        for d in row:
+            html_table = html_table + "<td>%s</td>\n" % d
+        html_table = html_table + '</tr>\n'
+    html_table = html_table + '</tbody>\n</table>'
+    html_output = html_output + html_table + '<br><br><br><br><div class="footer"><p>swapfe v0.0.1</p></div>'
+    return html_output
+
+def GetSellers(rendezvous):
+
+    from _decimal import Decimal
+    SellerData = []
+
+    SwapCMD = [SwapCmd,'-j', 'list-sellers', '--rendezvous-point', rendezvous, '--tor-socks5-port', '9050']
+    proc = subprocess.Popen(SwapCMD, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
+    
+    for line in iter(proc.stdout.readline, ''):
+        print(line)
+        try:
+            jsonOBJ = json.loads(line)
+        except Exception as e:
+            print(str(e))
+            continue
+        if 'status' in jsonOBJ:
+            if "Unreachable" == jsonOBJ['status']:
+                continue
+            if 'Online' in jsonOBJ['status']:
+                SellerInfo = []
+                try:
+                    SellerInfo.append(format_btc(jsonOBJ['status']['Online']['price']))
+                    SellerInfo.append(format_btc(jsonOBJ['status']['Online']['min_quantity']))
+                    SellerInfo.append(format_btc(jsonOBJ['status']['Online']['max_quantity']))
+                    SellerInfo.append(jsonOBJ['multiaddr'])
+                    SellerData.append(SellerInfo)
+                except Exception as e:
+                    print(str(e))
+                    yield str(e)
+                    break
+            else:
+                continue
+        else:
+            continue
+    html_output = render_sellers_html(SellerData)
+    yield html_output
 
     
 @app.route('/history')
