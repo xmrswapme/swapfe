@@ -78,13 +78,13 @@ Simply clone this git repo using your favorite method. Using the git CLI you can
 ### Dependencies
 * Python 3 or higher
 * Flask
-* psutils
+* psutil
 * xmr-btc-swap SWAP CLI
 
-**swapfe** requires two extra dependencies to be able to run correctly. These are **Flask** and **psutils**. Issue the following commands in your console to install these required packages. 
+**swapfe** requires two extra dependencies to be able to run correctly. These are **Flask** and **psutil**. Issue the following commands in your console to install these required packages. 
 
 `pip install Flask`
-`pip install psutils`
+`pip install psutil`
 
 You must download the Swap CLI from Comit-network and install it in the directory where **swapfe** resides. For \*NIX users you can download that by issuing the following command in your console:
 
