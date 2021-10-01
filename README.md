@@ -38,9 +38,9 @@ Here are the results of the Live Swap page on a fully completed swap. Click on t
 As you can see, it provides a nice format with which to see the realtime progress of the active swap. Once your swap completes, you may navigate away from the page.
 
 ### Failed or Incomplete Swap
-The most common occurence when a swap fails is the ability to withdraw your funds from the local *Bitcoin* wallet that SWAP CLI uses. We provide an interface to allow the withdraw of your transferred BTC back to your private wallet. 
+The most common occurrence when a swap fails is the ability to withdraw your funds from the local *Bitcoin* wallet that SWAP CLI uses. We provide an interface to allow the withdraw of your transferred BTC back to your private wallet. 
 
-One aspect of a failed swap is that generally you can conduct a new swap using the existing *Bitcoin* funds with a new provider. Our interface handles this option as well. But, if you are just fed up and want your *Bitcoin* in a safe place and would rather not conduct a new swap you can use this form to do that. The following screenshot shows the Withdraw interface.
+One aspect of a failed swap is that generally, you can conduct a new swap using the existing *Bitcoin* funds with a new provider. Our interface handles this option as well. But, if you are just fed up and want your *Bitcoin* in a safe place and would rather not conduct a new swap you can use this form to do that. The following screenshot shows the Withdraw interface.
 
 ![Withdraw](https://i.imgur.com/6kRc9za.png)
 
@@ -51,10 +51,10 @@ Another feature of **swapfe** is the ability to view the output of the history d
 
 ![Swap History](https://i.imgur.com/D91VzhO.png)
 
-The swap cli database is very primative as of now and just displays the SWAP ID and the state the swap finished in. As you can see we conducted three successful swaps. 
+The swap cli database is very primitive as of now and just displays the SWAP ID and the state the swap finished in. As you can see, we conducted three successful swaps. 
 
 ### Find Providers
-We have interpreted the output of the swap command when listing sellers for an arbritary rendezvousd point. It pulls in the price, min, max qty and the seller address to a formatted table and displays it within the web browser. The seller form and results can be seen in the following screenshots:
+We have interpreted the output of the swap command when listing sellers for an arbitrary rendezvous point. It pulls in the price, min, max qty, and the seller address to a formatted table and displays it within the web browser. The seller form and results can be seen in the following screenshots:
 
 ![Seller Form](https://i.imgur.com/zCy4th5.png)
 
@@ -63,7 +63,7 @@ We have interpreted the output of the swap command when listing sellers for an a
 
 #### Testing
 
-We have successfully tested this on various error responses and completed swaps. It **MUST** be pointed out that not all use cases have arose in our testing. This is why we need more people to test this interface so we can properly interpret the JSON results so they may be provided within the interface and appropriate responses can be implemented. 
+We have successfully tested this on various error responses and completed swaps. It **MUST** be pointed out that not all use cases have arisen in our testing. This is why we need more people to test this interface so we can properly interpret the JSON results so they may be provided within the interface and appropriate responses can be implemented. 
 
 What you can do if the interface fails to provide you with a status that is acceptable is to provide us with the JSON output in the console you ran **swapfe** from. This will allow us to code an interpreter to the JSON output and be able to handle it within the UI. 
 
@@ -81,7 +81,7 @@ Simply clone this git repo using your favorite method. Using the git CLI you can
 * psutils
 * xmr-btc-swap SWAP CLI
 
-**swapfe** requires two extra dependencies to be able to run correclty. These are **Flask** and **psutils**. Issue the following comands in your console to install these requried packages. 
+**swapfe** requires two extra dependencies to be able to run correctly. These are **Flask** and **psutils**. Issue the following commands in your console to install these required packages. 
 
 `pip install Flask`
 `pip install psutils`
@@ -91,27 +91,27 @@ You must download the Swap CLI from Comit-network and install it in the director
 `wget -q -O- https://github.com/comit-network/xmr-btc-swap/releases/download/0.8.3/swap_0.8.3_Linux_x86_64.tar | tar x`
 
 ### Running
-Once you've installed the required depencies you can then run **swapfe**. Simply run the following in your console window:
+Once you've installed the required depencies, you can then run **swapfe**. Simply run the following in your console window:
 
 `$ python swapfe.py`
 or
 `$ ./swapfe.py`
 
-It will spin up a webserver and open your default webbrowser to the location that provides the swap interface. 
+It will spin up a web-server and open your default web-browser to the location that provides the swap interface. 
 
-By default the **swapfe** interface uses a tor-socks5 port of 9050. If you have the tor socks running on a different port, we currently don't have support for that. If you know how to read Python you can change that in the code.
+By default, the **swapfe** interface uses a tor-socks5 port of 9050. If you have the tor socks running on a different port, we currently don't have support for that. If you know how to read Python you can change that in the code.
 
-If you are not running a tor instance on your machine **swapfe** will use the clearnet. This is by design of the Comit-network which defaults to tor and falls back to the clearnet if tor is not avaiable. 
+If you are not running a tor instance on your machine **swapfe** will use the clearnet. This is by design of the Comit-network which defaults to tor and falls back to the clearnet if tor is not available. 
 
 ## Use Case Scenarios
-What is nice about the way we designed a UI to the swap CLI is that it is able to run as a standalone webserver. This is particular useful for any third-parties that want to be a custodian for Atomic Swaps.
+What is nice about the way we designed a UI to the swap CLI is that it is able to run as a standalone web-server. This is particularly useful for any third-parties that want to be a custodian for Atomic Swaps.
 
-Of course, it must be said that being a third party that wishes to conduct atomic swaps on users behalf goes against the whole ideology of an atomic swap not needing a trusted third party. Nevertheless, exposure to Monero/Bitcoin atomic swaps is necessary and if people are willing to forgoe the primary reason behind them and enlist trust in a third party using our (or anyone else's) software; then so be it. So long as the network of atomic swap providers and users increases, we fully support the use of the software.
+Of course, it must be said that being a third party that wishes to conduct atomic swaps on users behalf goes against the whole ideology of an atomic swap not needing a trusted third party. Nevertheless, exposure to Monero/Bitcoin atomic swaps is necessary, and if people are willing to forgo the primary reason behind them and enlist trust in a third party using our (or anyone else's) software, then so be it. So long as the network of atomic swap providers and users increases, we fully support the use of the software.
 
 ### Apache & Nginx
-Because this is a Flask app one can ultimately use it with **wsgi** and the apache/nginx **wsgi** module. A little work needs to be done first. For one, if you are going to be a third party providing atomic swaps, then you need to edit the code to issue a unique `--data-base-dir <uniqueID>` with every instance. You will need to build in an interface to handle an internal swapID, separate from the one the SWAP CLI provides, for each users case - so that you may conduct withdraws/refunds and the like from the appropriate wallet. Finally, you will need to create a **wsgi** startup file with the necessary SSL requirements and options.
+Because this is a Flask app one can ultimately use it with **wsgi** and the apache/nginx **wsgi** module. A little work needs to be done first. For one, if you are going to be a third party providing atomic swaps, then you need to edit the code to issue a unique `--data-base-dir <uniqueID>` with every instance. You will need to build in an interface to handle an internal swapID, separate from the one the SWAP CLI provides, for each user's case - so that you may conduct withdraws/refunds and the like from the appropriate wallet. Finally, you will need to create a **wsgi** startup file with the necessary SSL requirements and options.
 
 We plan on providing this use case in future releases as we see the benefit of expanding the network. However, at this time, you will need to edit the code to make this work on you or your party's behalf.
 
 ### Other uses
-Because this is a local and standalone webserver, a user can run this on a machine on their local network and connect to it from their phone or their tablet and run a swap through there. Hell. You can run a swap while you do the dishes or laundry. It's a use case, although we suggest using your computer. 
+Because this is a local and standalone web-server, a user can run this on a machine on their local network and connect to it from their phone or their tablet and run a swap through there. Hell. You can run a swap while you do the dishes or laundry. It's a use case, although we suggest using your computer. 
