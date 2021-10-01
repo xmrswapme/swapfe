@@ -9,26 +9,26 @@ Latest Release Version (0.8.3):
 [Windows Swap CLI](https://github.com/comit-network/xmr-btc-swap/releases/download/0.8.3/swap_0.8.3_Windows_x86_64.zip)
 [OS X Swap CLI](https://github.com/comit-network/xmr-btc-swap/releases/download/0.8.3/swap_0.8.3_Darwin_x86_64.tar)
 
-We suggest exploring the various command line options that you may need to use aside from **swapfe**. We would appreciate it if you could provide us with feedback when **swapfe** is not providing details for various commands - as some have not been tested. This will enable us to build a complete GUI for the surrouding swap cli. 
+We suggest exploring the various command line options that you may need to use aside from **swapfe**. We would appreciate it if you could provide us with feedback when **swapfe** is not providing details for various commands - as some have not been tested. This will enable us to build a complete GUI for the surrounding swap cli. 
 
 ## Swapfe Web Interface
-**swapfe** is a GUI web interface to the comit-network swap command. It processes the json output of the swap CLI and interprets it producing a user interface within your web browser. It does this by starting its own "webserver" (flask), automatically opens your webbrowser to the specified address, and allows you to interact with the swap CLI. 
+**swapfe** is a GUI web interface to the comit-network swap command. It processes the json output of the swap CLI and interprets it producing a user interface within your web browser. It does this by starting its own "webserver" (flask), automatically opens your web-browser to the specified address, and allows you to interact with the swap CLI. 
 
-Currently, the first screen is the swapform. This is a UI for conducting a swap. It uses a known database of Market Makers (Atomic Swap Providers) from our [xmrswap.me](https://xmrswap.me) server. This database is checked against current swap providers and determines if they are online or not. You can use the **swapfe** web interface to choose an Atomic Swap Provider, or if you know another one that is not in the database, feel free to use that one as well. 
+Currently, the first screen is the swap form. This is a UI for conducting a swap. It uses a known database of Market Makers (Atomic Swap Providers) from our [xmrswap.me](https://xmrswap.me) server. This database is checked against current swap providers and determines if they are online or not. You can use the **swapfe** web interface to choose an Atomic Swap Provider, or if you know another one that is not in the database, feel free to use that one as well. 
 
 ### Conducting a swap
 
-**swapfe** will spin up a webserver and automatically open the webbrowser to the swapform page as seen below.
+**swapfe** will spin up a web-server and automatically open the web-browser to the swapform page as seen below.
 
 ![swapform](https://i.imgur.com/Rhsjgxn.png)
 
-From here you can choose a Seller Address from the table on the page, or enter your own seller address into **1**. Next enter an unusued *Bitcoin* change address into **2**. Finally input the *Monero* address you wish to receive the funds to in **3**. Press submit, **ONLY ONCE**, as it will begin running the command and will display the output of swap CLI on the page it redirects you to. 
+From here you can choose a Seller Address from the table on the page, or enter your own seller address into **1**. Next enter an unused *Bitcoin* change address into **2**. Finally, input the *Monero* address you wish to receive the funds to in **3**. Press submit, **ONLY ONCE**, as it will begin running the command and will display the output of swap CLI on the page it redirects you to. 
 
 The redirected page is continuously updated with the results of the swap in realtime. Please leave this page open until the swap finishes successfully or with an error. If a swap is currently live, do not close or go to a different page, as you will not be able to see the progress of the live swap.
 
 **Note**: All progress of the swap can also be seen in JSON format within the terminal where you ran **swapfe**. This is used for debugging purposes and will be needed for other use cases when they arise. 
 
-**Note 2**: NO DATA IS SENT TO OUR SERVERS. This is a local only webserver that is only accessible by you. We do pull in the Seller Database from our server, but nothing is sent to our servers. NO LOGGING OF ANY KIND OTHER THAN WHAT YOU SEE IN YOUR LOCAL BROWSER AND IN THE CONSOLE. 
+**Note 2**: NO DATA IS SENT TO OUR SERVERS. This is a local only web-server that is only accessible by you. We do pull in the Seller Database from our server, but nothing is sent to our servers. NO LOGGING OF ANY KIND OTHER THAN WHAT YOU SEE IN YOUR LOCAL BROWSER AND IN THE CONSOLE. 
 
 ### Successful Swap
 Here are the results of the Live Swap page on a fully completed swap. Click on the image to see it in full scale. 
