@@ -156,7 +156,7 @@ def showSignUp():
 def index():
     
     def error_message(line, html_error, SwapCmd):
-        html_error = html_error + "<br><h2>Your funds are safe.</h2>\n<h2>You can either: Issue the command:</h2> <p><strong>swap withdraw-btc --address <your_btc_address></strong></p><h2>Or:</h2> <p><strong>Start a new Atomic Swap with another Provider as this one seems to have problems. The funds in your bitcoin wallet will automatically be used to begin a new swap.</strong></p>"
+        html_error = html_error + "<br><h2>Your funds are safe.</h2>\n<h2>You can either: Issue the command:</h2> <p><strong>swap withdraw-btc --address <your_btc_address></strong></p><br><p><strong>Or use the Withdraw Link on this page</strong></p><br><h2>Or:</h2> <p><strong>Start a new Atomic Swap with another Provider as this one seems to have problems. The funds in your bitcoin wallet will automatically be used to begin a new swap.</strong></p>"
         p1 = subprocess.Popen([SwapCmd, "balance"], stdout=subprocess.PIPE)
         templine = p1.communicate()
         temp = templine[0].decode('utf-8')
@@ -164,9 +164,9 @@ def index():
         return html_error
 
     def inner(btcAddy, xmrAddy, seller):
+        WalletDownloaded = False
         QRPath = os.path.join('static', 'img', 'qrcodes')
-        SwapCMD = [SwapCmd, "-j", "buy-xmr", "--change-address",  btcAddy, "--receive-address", xmrAddy,
-        "--seller",  seller, "--tor-socks5-port", "9050"]
+        SwapCMD = [SwapCmd, "-j", "buy-xmr", "--change-address",  btcAddy, "--receive-address", xmrAddy,"--seller",  seller, "--tor-socks5-port", "9050"]
         proc = subprocess.Popen(SwapCMD, stderr=subprocess.PIPE, universal_newlines=True)
         StandardHTML = open(StandardHTMLFile, "r")
         html_body = StandardHTML.read()
@@ -203,10 +203,25 @@ def index():
                 yield html_output + "\n"
                 continue
             
+            if 'Downloading' in jsonOBJ['fields']['message']:
+                try:
+                    DownloadingMessage = jsonOBJ['fields']['message']
+                    html_output =  html_body + DownloadingMessage
+                    yield html_output + '<br>\n'
+                    print(DownloadingMessage)
+                    WalletDownloaded = True
+                    continue
+                except Exception as e:
+                    print("ERROR: STEP 1 (Connection issues)")
+                    yield str(e) + '<br/>\n'
+
             if step == 1:
                 try:
                     ConnectionMessage = jsonOBJ['fields']['message']
-                    html_output =  html_body + ConnectionMessage
+                    if WalletDownloaded:
+                        html_output = ConnectionMessage
+                    else:
+                        html_output =  html_body + ConnectionMessage
                     print(ConnectionMessage) 
                     step += 1
                 except Exception as e:
@@ -255,7 +270,8 @@ def index():
                     qrfile = hash + ".png"
                     qrproc = subprocess.Popen(['qrencode', '-o', os.path.join(QRPath,qrfile), '-s', '6','-t', 'PNG32', BTCDepositAddy], universal_newlines=True)
                     image_html = '<img src="'   + os.path.join(QRPath,qrfile) +'"/><br>\n'
-                    html_output = '<p>' + Message + '</p>\n' + '<p>Bitcoin Depoist Address:    ' + BTCDepositAddy + '</p><br>\n' + image_html + '<br>\n' 
+                    cancel_html = '<p>If you would like to cancel this active swap, do not deposit BTC in the above address and click the following link: </p><a href=/cancel?pid=%s>Cancel Swap</a><br>Otherwise, proceed with the deposit' % proc.pid
+                    html_output = '<p>' + Message + '</p>\n' + '<p>Bitcoin Depoist Address:    ' + BTCDepositAddy + '</p><br>\n' + image_html + '<br>\n' + cancel_html 
                     step += 1
                     #kill(proc.pid)
                 except:
@@ -343,6 +359,23 @@ def index():
     except Exception as e:
         print(str(e))
         return Response(str(e), mimetype='text/html')
+
+
+@app.route('/cancel', methods=['GET'])
+def cancel_swap():
+    from selenium.webdriver.common.actions import interaction
+    StandardHTML = open(StandardHTMLFile, "r")
+    html_body = StandardHTML.read()
+    StandardHTML.flush()
+    StandardHTML.close()
+    query_parameters = request.args
+    
+    swap_process_pid = query_parameters.get('pid')
+    kill(int(swap_process_pid))
+    html_output = html_body + '<br><h1>Swap Cancelled!</h1>\n'
+    return html_output
+
+
 
 '''
 def get_swap(url,target_path):
