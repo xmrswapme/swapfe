@@ -73,6 +73,7 @@ We now have Windows (x86) and Linux (x86) standalone binaries.
 ### Windows 
 The Windows (x86) binary was created using PyInstaller and contains all the necessary dependencies we have built in from the source. Simply download the binary release here and run it:
 
+[https://github.com/xmrswapme/swapfe/releases/tag/v0.0.2](https://github.com/xmrswapme/swapfe/releases/tag/v0.0.2)
 
 
 ### Linux
@@ -83,6 +84,9 @@ In debian systems, issue the following command in your console:
 `sudo apt install qrencode`
 
 Then simply download the Linux Binary release and run it. 
+
+[https://github.com/xmrswapme/swapfe/releases/tag/v0.0.2](https://github.com/xmrswapme/swapfe/releases/tag/v0.0.2)
+
 
 #### Note
 Because we have not signed **swapfe.exe** your Windows system may ask for permission and authorization to run the program. It may also requests permissions to run the swap CLI as well as that package is not signed either. Please allow these permissions to continue with the swap. 
