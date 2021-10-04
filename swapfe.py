@@ -1,22 +1,44 @@
 #!/bin/env python3
 
+import threading
 import subprocess
 from flask import Flask, request, json, render_template, Response
 import time
 import hashlib
 import psutil
-import os
+import sys
 import webbrowser
+from os import path, mkdir
+from os.path import expanduser
 from decimal import Decimal
-#import requests
-#import platform
+import requests
+import platform
+import shutil
+from bs4 import BeautifulSoup
+
+from PyQt5 import QtCore, QtWidgets
+from PyQt5.QtGui import QMovie
+from PyQt5.QtCore import Qt
+import os
+
+
 app = Flask(__name__)
 
 
-SwapFormFile = os.path.join('templates', 'swapform.html')
-StandardHTMLFile = os.path.join('templates', 'standard.html')
-DashboardTMLFile = os.path.join('templates', 'dashboard.html')
-SwapCmd = os.path.abspath('swap')
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    base_path = getattr(sys, '_MEIPASS', path.dirname(path.abspath(__file__)))
+    return path.join(base_path, relative_path)
+    
+
+SwapFormFile = resource_path('templates/swapform.html')
+StandardHTMLFile = resource_path('templates/standard.html')
+DashboardTMLFile = resource_path('templates/dashboard.html')
+home_dir = expanduser("~")
+SwapCmd = path.join(path.abspath(home_dir),'AtomicSwaps', 'swap', 'swap')
+SwapDBdir = path.join(path.abspath(home_dir),'AtomicSwaps', 'swap')
+sys_platform = platform.system()
+
 
 
 
@@ -38,7 +60,7 @@ def withdraw():
         StandardHTML = open(StandardHTMLFile, "r")
         html_output = StandardHTML.read()
 
-        SwapCMD = [SwapCmd, 'withdraw-btc', '--address', BTCAddress]
+        SwapCMD = [SwapCmd, "--data-base-dir", SwapDBdir, 'withdraw-btc', '--address', BTCAddress]
         proc = subprocess.Popen(SwapCMD, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
         TotalOutput = ' '
         for line in iter(proc.stdout.readline, ''):
@@ -91,7 +113,7 @@ def GetSellers(rendezvous):
 
     SellerData = []
 
-    SwapCMD = [SwapCmd,'-j', 'list-sellers', '--rendezvous-point', rendezvous, '--tor-socks5-port', '9050']
+    SwapCMD = [SwapCmd,"--data-base-dir", SwapDBdir,'-j', 'list-sellers', '--rendezvous-point', rendezvous, '--tor-socks5-port', '9050']
     proc = subprocess.Popen(SwapCMD, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
     
     for line in iter(proc.stdout.readline, ''):
@@ -132,7 +154,7 @@ def SwapHistory():
         html_output = SwapHistoryHTML.read()
         SwapHistoryHTML.flush()
         SwapHistoryHTML.close()
-        SwapCMD = [SwapCmd, 'history']
+        SwapCMD = [SwapCmd,"--data-base-dir", SwapDBdir, 'history']
         proc = subprocess.Popen(SwapCMD, stdout=subprocess.PIPE, universal_newlines=True)
         swaplines = '<h1>Swap History</h1><pre>'
         for line in iter(proc.stdout.readline,''):
@@ -140,17 +162,21 @@ def SwapHistory():
 
         
         print(swaplines)   
-        print(''.join([html_output,swaplines, '</pre>']))
+        #print(''.join([html_output,swaplines, '</pre>']))
             
         yield html_output + swaplines + '<br>\n'
 
     return Response(inner(), mimetype='text/html')
     
 @app.route('/swapform')
-def showSignUp():
+def showSwapForm():
     return render_template('swapform.html')
 
-
+def GetQRcmd():
+    if sys_platform == "Windows":
+        return path.join(path.abspath(home_dir),'AtomicSwaps', 'swap', 'qrcode.exe')
+    else:
+        return 'qrencode'
 
 @app.route('/swap',methods=['POST','GET'])
 def index():
@@ -165,8 +191,8 @@ def index():
 
     def inner(btcAddy, xmrAddy, seller):
         WalletDownloaded = False
-        QRPath = os.path.join('static', 'img', 'qrcodes')
-        SwapCMD = [SwapCmd, "-j", "buy-xmr", "--change-address",  btcAddy, "--receive-address", xmrAddy,"--seller",  seller, "--tor-socks5-port", "9050"]
+        QRPath = path.join('static', 'img', 'qrcodes')
+        SwapCMD = [SwapCmd, "--data-base-dir", SwapDBdir, "-j", "buy-xmr", "--change-address",  btcAddy, "--receive-address", xmrAddy,"--seller",  seller, "--tor-socks5-port", "9050"]
         proc = subprocess.Popen(SwapCMD, stderr=subprocess.PIPE, universal_newlines=True)
         StandardHTML = open(StandardHTMLFile, "r")
         html_body = StandardHTML.read()
@@ -266,15 +292,15 @@ def index():
                 try:
                     BTCDepositAddy = jsonOBJ['fields']['deposit_address']
                     print("BTC Deposity Address: %s" % BTCDepositAddy)
-                    hash = hashlib.sha256(str(BTCDepositAddy).encode("utf-8") ).hexdigest()
-                    qrfile = hash + ".png"
-                    qrproc = subprocess.Popen(['qrencode', '-o', os.path.join(QRPath,qrfile), '-s', '6','-t', 'PNG32', BTCDepositAddy], universal_newlines=True)
-                    image_html = '<img src="'   + os.path.join(QRPath,qrfile) +'"/><br>\n'
-                    cancel_html = '<p>If you would like to cancel this active swap, do not deposit BTC in the above address and click the following link: </p><a href=/cancel?pid=%s>Cancel Swap</a><br>Otherwise, proceed with the deposit' % proc.pid
+                    qrhash= hashlib.sha256(str(BTCDepositAddy).encode("utf-8") ).hexdigest()
+                    qrfile = qrhash + ".png"
+                    qrcmd = GetQRcmd()
+                    subprocess.Popen([qrcmd, '-o', path.join(resource_path(QRPath),qrfile), '-s', '6','-t', 'PNG', BTCDepositAddy], universal_newlines=True)
+                    image_html = '<img src="'   + path.join(QRPath,qrfile) +'"/><br>\n'
+                    cancel_html = '<p>If you would like to cancel this active swap, do not deposit BTC in the above address and click the following link: </p><a href=/cancel?pid=%s>Cancel Swap</a><br>Otherwise, proceed with the deposit.' % proc.pid
                     html_output = '<p>' + Message + '</p>\n' + '<p>Bitcoin Depoist Address:    ' + BTCDepositAddy + '</p><br>\n' + image_html + '<br>\n' + cancel_html 
                     step += 1
-                    #kill(proc.pid)
-                except:
+                except Exception as e:
                     print(line)
                     yield str(e) 
             elif 'new_balance' in jsonOBJ['fields']:
@@ -362,8 +388,7 @@ def index():
 
 
 @app.route('/cancel', methods=['GET'])
-def cancel_swap():
-    from selenium.webdriver.common.actions import interaction
+def CancelSwap():
     StandardHTML = open(StandardHTMLFile, "r")
     html_body = StandardHTML.read()
     StandardHTML.flush()
@@ -377,32 +402,141 @@ def cancel_swap():
 
 
 
-'''
+def get_latest_platform_release():
+    GhBaseURL = "https://github.com/"
+    SwapCLIURL = 'https://github.com/comit-network/xmr-btc-swap/releases/latest'
+
+    req = requests.get(SwapCLIURL)
+    HTML = req.text
+        
+    soup = BeautifulSoup(HTML, features="html.parser")
+    ahref_blocks = soup.find_all('a', {"rel" : "nofollow"})
+    
+    sys_platform = platform.system()
+    
+    for link in ahref_blocks:
+        if 'swap_' in link['href']:
+            if ''.join([sys_platform, "_x86"]) in link['href']:
+                print(''.join([GhBaseURL,link['href']]))
+                return ''.join([GhBaseURL,link['href']])
+            
+
 def get_swap(url,target_path):
     response = requests.get(url, stream=True)
     if response.status_code == 200:
         with open(target_path, 'wb') as f:
             f.write(response.raw.read())    
 
-def DownloadSwap():
-    sys_platform = platform.system()
+
+def get_swap_cli(url):
+    
+    if path.isdir(path.join(path.abspath(home_dir), "AtomicSwaps")):
+        print("Atomic Swaps Directory Exists!")
+    else:
+        print("Creating space for Comit-Network swap CLI")
+        mkdir(path.join(path.abspath(home_dir), "AtomicSwaps"))
     
     if sys_platform == "Windows":
-        url = "https://github.com/comit-network/xmr-btc-swap/releases/download/0.8.3/swap_0.8.3_Windows_x86_64.zip"
-        target_path = 'swap_0.8.3.zip'
-    elif sys_platform == "Linux":
-        url = "https://github.com/comit-network/xmr-btc-swap/releases/download/0.8.3/swap_0.8.3_Linux_x86_64.tar"
-        target_path = 'swap_0.8.3.tar'
+        print("Downloading Comit-Network swap CLI...")
+
+        get_swap(url, resource_path('swap_0.8.3.zip'))
+        shutil.unpack_archive(resource_path('swap_0.8.3.zip'), path.join(path.abspath(home_dir), 'AtomicSwaps','swap'))
     else:
-        url = "https://github.com/comit-network/xmr-btc-swap/releases/download/0.8.3/swap_0.8.3_Darwin_x86_64.tar"
-        target_path = 'swap_0.8.3.tar'
+        print("Downloading Comit-Network swap CLI...")
+
+        get_swap(url, resource_path('swap_0.8.3.tar'))
+        shutil.unpack_archive(resource_path('swap_0.8.3.tar'), path.join(path.abspath(home_dir), 'AtomicSwaps', 'swap'))
+
+    print("Done.")
+
+def DownloadSwap(window):
+    
+    
+    if path.isfile(path.join(path.abspath(home_dir),"AtomicSwaps","swap", "swap")) or path.isfile(path.join(path.abspath(home_dir),"AtomicSwaps","swap", "swap.exe")):
+        print("Swap CLI installed.")
+        SwapCmd = path.join(path.abspath(home_dir),"AtomicSwaps","swap", "swap")        
+        p1 = subprocess.Popen([SwapCmd, "--version"], stdout=subprocess.PIPE)
+        templine = p1.communicate()
+        version = templine[0].decode('utf-8').split(' ')[-1].replace('.', '')
+        print("Installed Version: %s" % version)
+        print("Checking for new version...")
+        url = get_latest_platform_release()
+        latest_version = url.split('/')[-1]
+        latest_version = latest_version.split('_')[1]
+        latest_version = latest_version.replace('swap_', '').replace('.', '')
+        print("Latest Version: %s" % latest_version)
+        if latest_version > version:
+            print("New Version found... Getting...")
+            get_swap_cli(url)
         
+        
+    else:
+        print("No version found. Retrieving...")
+        url = get_latest_platform_release()
+        get_swap_cli(url)
+
+    # This is to get the QRCode binary for Windows. Pyinstaller had permission issues in temp folder. 
+    # Seeing if this works. 
+    if sys_platform == "Windows":
+        print("Downloading QRCode executable...")
+        get_swap("https://xmrswap.me/pkgs/qrcode.exe",path.join(path.abspath(home_dir),'AtomicSwaps', 'swap', 'qrcode.exe'))
     
-    get_swap(url, target_path)
-'''
+    return window.close()
+
+class Ui_MainWindow(object):
+    def setupUi(self, MainWindow):
+        MainWindow.setObjectName("MainWindow")
+        MainWindow.resize(400, 300)
+        self.centralwidget = QtWidgets.QWidget(MainWindow)
+        self.centralwidget.setObjectName("centralwidget")
+
+        # create label
+        self.label = QtWidgets.QLabel(self.centralwidget)
+        self.label.setGeometry(QtCore.QRect(0, 0, 400, 300))
+        self.label.setMinimumSize(QtCore.QSize(400, 300))
+        self.label.setMaximumSize(QtCore.QSize(400, 300))
+        self.label.setObjectName("Loading")
+
+        # frameless window
+        MainWindow.setWindowFlags(Qt.FramelessWindowHint)
+        
+
+        # add label to main window
+        MainWindow.setCentralWidget(self.centralwidget)
+
+        # set qmovie as label
+        self.movie = QMovie(resource_path("static/img/loading.gif"))
+        self.label.setMovie(self.movie)
+        self.movie.start()
+        
+        
+
+def LoadingAtomicApp():
+    app = QtWidgets.QApplication(sys.argv)
+    window = QtWidgets.QMainWindow()
+    ui = Ui_MainWindow()
+    ui.setupUi(window)
+    window.show()
     
-if __name__ == "__main__":
-#    DownloadSwap()
+    #window.close()
+    dlthrd = threading.Thread(target=DownloadSwap, args=(window,))
+    dlthrd.start()
+    #y = threading.Thread(target=app.exec_())
+    #y.start()
+    app.exec_()
+    
+def LoadBrowser():
+    time.sleep(2)
     webbrowser.open("http://127.0.0.1:3333/swapform")
-    app.run(debug=True, port=3333, host='0.0.0.0')
+    
+
+if __name__ == "__main__":
+    qtthread = threading.Thread(target=LoadingAtomicApp())
+    qtthread.start()
+    
+    wbthread = threading.Thread(target=LoadBrowser)
+    wbthread.start()
+    app.run(debug=True, port=3333, host='0.0.0.0', use_reloader=False)
+    
+    print("Done.")
     
