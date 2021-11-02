@@ -25,7 +25,8 @@
                             </li>                             
                             <li class="nav-item"> 
                                 <a class="nav-link" href="/resume">Resume</a> 
-                            </li>                        
+                            </li>
+                        
                             <li class="nav-item"> 
                                 <a class="nav-link" href="/withdrawform">Withdraw</a> 
                             </li>                             
@@ -42,11 +43,11 @@
                 </div>                 
             </nav>
         <div class="container">
-            <h1>Find Rendezvous Sellers</h1>
-            <h2>Onion3/Tor Rendezvous Addresses Suppored!</h2>
-            <form action="http://localhost:3333/listsellers" id="join-us" method="post">
+            <h1>Resume a failed or cancelled swap</h1>
+            <h2>Swap IDs listed below</h2>
+            <form action="http://localhost:3333/resumeswap" id="join-us" method="post">
                 <div class="fields">
-                    <span> <input placeholder="Rendezvous Multiaddress" type="text" name="multiaddress" id="multiaddress"/><p style="color: white; font-size: 12px; font-family: 'Allerta', sans-serif;">Full Multiaddress of Rendezvous endpoint"</p> </span>
+                    <span> <input placeholder="swap id" type="text" name="swapid" id="swapid"/><p style="color: white; font-size: 12px; font-family: 'Allerta', sans-serif;">Enter a swap ID found below</p> </span>
                     <br/>
                     <!-- 
                     <div id="loaderImg"><img src="../static/img/loading-gif.gif" alt="" width="75px" height="75px"/></div>
@@ -61,19 +62,7 @@
                 </div><br>
                 <p>Click only once and wait for the next screen to appear.</p>
             </form>
-             <script>
-			        window.setInterval("reloadIFrame();", 180000);
-			        function reloadIFrame() {
-			         document.getElementById("GlargVilardi").src=GlargVilardi.src;
-			        }
-			</script>
-			<br><br><br><br><br>
-			
-			    
-            <div id="GlargVilardi" style="--aspect-ratio: 16/9;">
-	            <iframe src="https://providers.xmrswap.me/getProviders" frameborder="0">
-				</iframe>
-            </div>
+
         </div><br><br><br><br>
         <div class="footer"><p>swapfe v0.0.3</p></div>
 		</body>

@@ -73,22 +73,25 @@ We now have Windows (x86) and Linux (x86) standalone binaries.
 ### Windows 
 The Windows (x86) binary was created using PyInstaller and contains all the necessary dependencies we have built in from the source. Simply download the binary release here and run it:
 
-[https://github.com/xmrswapme/swapfe/releases/tag/v0.0.2](https://github.com/xmrswapme/swapfe/releases/tag/v0.0.2)
+[https://github.com/xmrswapme/swapfe/releases/tag/v0.0.3](https://github.com/xmrswapme/swapfe/releases/tag/v0.0.3)
 
 
 ### Linux
-The Linux (x86) binary was created using the same method as the Windows (x86) binary - with PyInstaller. There is one dependency requirement for Linux users and that is to install the **qrencode** package. 
+- Dependencies: qrencode
 
-In debian systems, issue the following command in your console:
-
-`sudo apt install qrencode`
-
-Then simply download the Linux Binary release and run it. 
-
-[https://github.com/xmrswapme/swapfe/releases/tag/v0.0.2](https://github.com/xmrswapme/swapfe/releases/tag/v0.0.2)
+[https://github.com/xmrswapme/swapfe/releases/tag/v0.0.3](https://github.com/xmrswapme/swapfe/releases/tag/v0.0.3)
 
 
-#### Note
+#### Debian
+There is a .deb package for Debian distributions. 
+
+Run
+
+`sudo apt install ./swapfe_0.0.3_amd64.deb`
+
+**swapfe** will be installed in */usr/local/bin* and the .deb wil isntall the **qrencode** dependency as well. 
+
+### Note
 Because we have not signed **swapfe.exe** your Windows system may ask for permission and authorization to run the program. It may also requests permissions to run the swap CLI as well as that package is not signed either. Please allow these permissions to continue with the swap. 
 
 Also, we have created a folder in your system's user's home directory called *AtomicSwaps/swap*. This is where you will find the downloaded swap CLI from Comit-Network. Also, in this directory is where your swap CLI database files are. These contain your local *Bitcoin* and *Monero* wallets. 
@@ -133,7 +136,6 @@ Simply clone this git repo using your favorite method. Using the git CLI you can
 `sudo apt install qrencode`
 
 
-
 You must download the Swap CLI from Comit-network and install it in the directory where **swapfe** resides. For \*NIX users you can download that by issuing the following command in your console:
 
 `wget -q -O- https://github.com/comit-network/xmr-btc-swap/releases/download/0.8.3/swap_0.8.3_Linux_x86_64.tar | tar x`
@@ -163,3 +165,12 @@ We plan on providing this use case in future releases as we see the benefit of e
 
 ### Other uses
 Because this is a local and standalone web-server, a user can run this on a machine on their local network and connect to it from their phone or their tablet and run a swap through there. Hell. You can run a swap while you do the dishes or laundry. It's a use case, although we suggest using your computer. 
+
+# Donation
+We are reaching out to the Monero community for support. Testing **swapfe** and the various functions requires holding a decent amount of XMR. Donations will help us facilitate more functions, design implementations and features in future releases. If you are willing to donate, your donation, not matter how large or small, will go a long way to the maturity of this software.
+
+XMR Address:
+
+`82YwMfwYghJ9ZQwuN1NujXZYqFv9UHQkHBobLCp4FdsGa72BS92eM2KfpmzQwZkXr68wmAUuMiXqsXuqScbqE7cTQFZjHth`
+
+Thank you. 
