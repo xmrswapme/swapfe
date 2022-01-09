@@ -1,6 +1,9 @@
 # swapfe 
 Atomic Swap web interface front end with realtime reporting for *Bitcoin* to *Monero* atomic swaps. 
 
+# NOTE: THIS IS CURRENTLY NOT FUNCTIONAL AS swapfe DOWNLOADS THE LATEST VERSION OF SWAP CLI WHICH IS BROKEN
+We are waiting for an upcoming release with a patch in swap CLI that will enable **swapfe** to work once again.
+
 ## Atomic Swap CLI
 Developed by the Comit-Network, their command line interface (SWAP CLI) allows atomic swaps between the Bitcoin and Monero blockchain. You can download the Atomic Swap CLI to get started at the links below. 
 
