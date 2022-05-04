@@ -42,7 +42,7 @@
         <div class="container">
             <h1>Start a Swap!</h1>
             <h2>Onion3/Tor Addresses Suppored!</h2>
-            <form action="http://localhost:3333/swap" id="join-us" method="post">
+            <form action="" id="join-us" method="post">
                 <div class="fields">
                     <span> <input placeholder="Multiaddress" type="text" name="multiaddress" id="multiaddress"/><p style="color: white; font-size: 12px; font-family: 'Allerta', sans-serif;">Full Multiaddress including "/p2p/xxxxxxxxxx..."</p> </span>
                     <br/>
@@ -60,7 +60,11 @@
                 </div><br>
                 <p>Click only once and wait for the next screen to appear.</p>
             </form>
-
+			<script type="text/javascript">
+			    var ip = location.host;
+			    alert(ip);
+			    document.getElementById('join-us').action = 'http://' + ip + '/swap';
+			</script>
 			<br><br><br><br><br>
 			
 			    

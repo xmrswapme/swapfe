@@ -536,9 +536,9 @@ def index():
             
 
     try:
-        seller = request.form['multiaddress']
-        btcAddy = request.form['btc']
-        xmrAddy = request.form['xmr']
+        seller = request.form['multiaddress'].rstrip().lstrip()
+        btcAddy = request.form['btc'].rstrip().lstrip()
+        xmrAddy = request.form['xmr'].rstrip().lstrip()
         return Response(inner(btcAddy,xmrAddy,seller), mimetype='text/html')  # text/html is required for most browsers to show th$
     except Exception as e:
         print(str(e))
@@ -562,7 +562,7 @@ def CancelSwap():
 
 def get_latest_platform_release():
     GhBaseURL = "https://github.com/"
-    SwapCLIURL = 'https://github.com/comit-network/xmr-btc-swap/releases/latest'
+    SwapCLIURL = 'https://github.com/comit-network/xmr-btc-swap/releases'
 
     req = requests.get(SwapCLIURL)
     HTML = req.text
@@ -623,7 +623,7 @@ def DownloadSwap(window):
         latest_version = latest_version.split('_')[1]
         latest_version = latest_version.replace('swap_', '').replace('.', '')
         print("Latest Version: %s" % latest_version)
-        if latest_version > version:
+        if latest_version > version or "preview" in latest_version:
             print("New Version found... Getting...")
             get_swap_cli(url)
         
@@ -685,7 +685,7 @@ def LoadingAtomicApp():
     
 def LoadBrowser():
     time.sleep(2)
-    webbrowser.open("http://127.0.0.1:3333/swapform")
+    webbrowser.open("http://0.0.0.0:3333/swapform")
     
 
 if __name__ == "__main__":
