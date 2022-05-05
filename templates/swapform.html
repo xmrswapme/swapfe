@@ -3,9 +3,11 @@
         <link rel="stylesheet" href="../static/css/onionform.css">
         <link rel="stylesheet" href="../static/css/style.css">
         <link rel="stylesheet" href="../static/css/iframe.css"> 
+        <link rel="stylesheet" href="../static/css/loader.css">
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Alegreya+Sans+SC&display=swap">
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Benne&display=swap">
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Allerta&display=swap">
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
     </head>
     <body>
@@ -40,6 +42,7 @@
                 </div>                 
             </nav>
         <div class="container">
+
             <h1>Start a Swap!</h1>
             <h2>Onion3/Tor Addresses Suppored!</h2>
             <form action="" id="join-us" method="post">
@@ -53,17 +56,30 @@
                      -->
                     <span> <input placeholder="BTC Change Address" type="text" name="btc" id="btc"/><p style="color: white; font-size: 12px; font-family: 'Allerta', sans-serif;">Your bitcoin change address in case of a refund.</p></span><br/>
                     <span> <input placeholder="XMR Receive Address" type="text" name="xmr" id="xmr"/><p style="color: white; font-size: 12px; font-family: 'Allerta', sans-serif;">Monero receive address.</p></span>
-                </div>                
+                </div>
+				<!-- Page Preloder -->
+                     
                 <div class="submit">
     				<!--  <input class="submit" type = "submit" value = "Submit" />-->
                     <input class="submit" value="Submit" type="submit" id="btnSignUp"/>
                 </div><br>
                 <p>Click only once and wait for the next screen to appear.</p>
             </form>
+            <img src="https://www.dariusland.com/images/load.gif" id="spinner" class="hide">
 			<script type="text/javascript">
-			    var ip = location.host;
-			    alert(ip);
-			    document.getElementById('join-us').action = 'http://' + ip + '/swap';
+			    
+			</script>
+			<script type="text/javascript">
+			const form = document.getElementById('join-us');
+			const spinner = document.getElementById('spinner');
+
+			form.addEventListener('submit', (e) => {
+			  form.classList.toggle('fade-out');
+			  spinner.classList.toggle('show');
+			  
+			});
+			var ip = location.host;
+	      	form.action = 'http://' + ip + '/swap';
 			</script>
 			<br><br><br><br><br>
 			

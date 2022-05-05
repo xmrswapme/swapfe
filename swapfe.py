@@ -343,7 +343,6 @@ def SwapConditionals(line, proc):
     try:
         jsonOBJ = json.loads(line.rstrip())
         Message = jsonOBJ['fields']['message'].rstrip()
-        Level = jsonOBJ['level']
         #print(Message)
         #print(Level)
         #print(step)
@@ -383,9 +382,13 @@ def SwapConditionals(line, proc):
         
         
     # output any warning message to the web interface
-    if Level == "WARN":
-        html_output = '<p>' + Message + '</p>'
-        yield html_output
+    try:
+        Level = jsonOBJ['level']    
+        if Level == "WARN":
+            html_output = '<p>' + Message + '</p>'
+            yield html_output
+    except:
+        pass
     
     # download monero-wallet-rpc
     if 'Downloading' in jsonOBJ['fields']['message']:
@@ -623,7 +626,7 @@ def DownloadSwap(window):
         latest_version = latest_version.split('_')[1]
         latest_version = latest_version.replace('swap_', '').replace('.', '')
         print("Latest Version: %s" % latest_version)
-        if latest_version > version or "preview" in latest_version:
+        if (latest_version > version or "preview" in latest_version) and "0102" not in version:
             print("New Version found... Getting...")
             get_swap_cli(url)
         

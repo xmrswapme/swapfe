@@ -1,8 +1,16 @@
 # swapfe 
 Atomic Swap web interface front end with realtime reporting for *Bitcoin* to *Monero* atomic swaps. 
 
-# NOTE: CURRENTLY UNDER REBUILD FOR MOBILE SWAPS. 
-The current binaries will work on Ubuntu 22.04, but not on older versions. Please check your versions before trying. They may also work for Windows and Apple Users, but is currently untested. Please stay tuned for updates. 
+# NEW RELEASE
+Version 0.1.0 is now available. Windows and Linux binaries are available on the release page.
+
+## Mobile swap 
+From your web browser on your phone or tablet, after starting **swapfe**, navigate to your computers LAN address port 3333 followed by /swapform
+i.e,
+
+```shell
+http://192.168.1.201:3333/swapform
+````
 
 ## Atomic Swap CLI
 Developed by the Comit-Network, their command line interface (SWAP CLI) allows atomic swaps between the Bitcoin and Monero blockchain. You can download the Atomic Swap CLI to get started at the links below. 
